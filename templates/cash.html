@@ -1,0 +1,30 @@
+{% extends "base.html" %} {% block content %}
+<div class="card shadow-sm p-4">
+    <h2 class="card-title text-primary mb-4">新增現金庫存</h2>
+    <form method="post" action="http://127.0.0.1:5000/cash">
+        <div class="mb-3">
+            <label for="taiwanese-dollars" class="form-label">台幣</label>
+            <input type="number" class="form-control" id="taiwanese-dollars" name="taiwanese-dollars"
+                placeholder="輸入台幣金額" required />
+        </div>
+
+        <div class="mb-3">
+            <label for="us-dollars" class="form-label">美金</label>
+            <input step="0.01" type="number" class="form-control" id="us-dollars" name="us-dollars"
+                placeholder="輸入美金金額 (例如: 100.00)" required />
+        </div>
+
+        <div class="mb-3">
+            <label for="note" class="form-label">備註</label>
+            <input type="text" class="form-control" id="note" name="note" placeholder="輸入備註 (例如: 薪資收入)" />
+        </div>
+
+        <div class="mb-3">
+            <label for="date" class="form-label">日期</label>
+            <input type="date" class="form-control" id="date" name="date" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary" >提交表單</button>
+    </form>
+</div>
+{% endblock %}

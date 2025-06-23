@@ -1,0 +1,41 @@
+{% extends "base.html" %} {% block content %}
+<div class="card shadow-sm p-4">
+    <h2 class="card-title text-primary mb-4">新增股票交易紀錄</h2>
+    <form method="post" action="http://127.0.0.1:5000/stock">
+        <div class="mb-3">
+            <label for="stock-id" class="form-label">股票代號</label>
+            <input type="text" class="form-control" id="stock-id" name="stock-id" placeholder="輸入股票代號 (例如: 2330)"
+                required />
+        </div>
+
+        <div class="mb-3">
+            <label for="stock-num" class="form-label">成交股數</label>
+            <input type="number" class="form-control" id="stock-num" name="stock-num" placeholder="輸入成交股數" required />
+        </div>
+
+        <div class="mb-3">
+            <label for="stock-price" class="form-label">成交單價</label>
+            <input step="0.01" type="number" class="form-control" id="stock-price" name="stock-price"
+                placeholder="輸入成交單價 (例如: 150.50)" required />
+        </div>
+
+        <div class="mb-3">
+            <label for="processing-fee" class="form-label">手續費</label>
+            <input type="number" class="form-control" id="processing-fee" name="processing-fee"
+                placeholder="輸入手續費 (如果沒有請填 0)" value="0" />
+        </div>
+
+        <div class="mb-3">
+            <label for="tax" class="form-label">交易稅</label>
+            <input type="number" class="form-control" id="tax" name="tax" placeholder="輸入交易稅 (如果沒有請填 0)" value="0" />
+        </div>
+
+        <div class="mb-3">
+            <label for="date" class="form-label">日期</label>
+            <input type="date" class="form-control" id="date" name="date" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary">提交表單</button>
+    </form>
+</div>
+{% endblock %}

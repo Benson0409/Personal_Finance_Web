@@ -1,0 +1,191 @@
+{% extends "base.html" %} {% block content %}
+<style>
+    /* Custom styles for tables */
+    .table-responsive-custom {
+        overflow-x: auto;
+        /* Enable horizontal scroll for small screens */
+    }
+
+    .table-custom th,
+    .table-custom td {
+        white-space: nowrap;
+        /* Prevent text wrapping in table cells */
+        vertical-align: middle;
+        /* Align content vertically in the middle */
+        padding: 0.75rem;
+        /* Standard padding */
+        border: 1px solid #dee2e6;
+        /* Set a consistent border color for all cells */
+    }
+
+    .table-custom thead th {
+        background-color: #e9ecef;
+        /* Light gray background for header */
+        color: #495057;
+        /* Darker text for header */
+        border-bottom: 2px solid #dee2e6;
+        /* Stronger bottom border for header */
+        font-weight: bold;
+    }
+
+    .table-custom tbody tr:hover {
+        background-color: #f2f2f2;
+        /* Subtle hover effect */
+    }
+
+    /* Adjust font size for smaller screens specifically for tables if needed */
+    @media (max-width: 767.98px) {
+        .table-custom {
+            font-size: 0.85rem;
+            /* Slightly smaller font on small devices */
+        }
+
+        .table-custom th,
+        .table-custom td {
+            padding: 0.5rem;
+            /* Smaller padding on small devices */
+        }
+    }
+</style>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h2 class="card-title text-primary mb-3">現金庫存總覽</h2>
+        <div class="row">
+            <div class="col-md-6 col-lg-3 mb-3 mb-md-0">
+                <div class="p-3 bg-light rounded text-center">
+                    <p class="mb-0 text-muted">台幣總額</p>
+                    <h4 class="fw-bold text-dark">{{cash_data['td']}}</h4>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-3 mb-md-0">
+                <div class="p-3 bg-light rounded text-center">
+                    <p class="mb-0 text-muted">美金總額</p>
+                    <h4 class="fw-bold text-dark">{{cash_data['ud']}}</h4>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-3 mb-lg-0">
+                <div class="p-3 bg-light rounded text-center">
+                    <p class="mb-0 text-muted">今日匯率(全球即時匯率API)</p>
+                    <h4 class="fw-bold text-info">{{cash_data['currency']}}</h4>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="p-3 bg-primary text-white rounded text-center">
+                    <p class="mb-0">現金總額</p>
+                    <h4 class="fw-bold">{{cash_data['total']}}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h4 class="card-title text-primary mb-3">現金更動紀錄</h4>
+        <div class="table-responsive table-responsive-custom">
+            <table class="table table-hover table-striped table-bordered table-custom">
+                <thead>
+                    <tr class="table-primary">
+                        <th scope="col">ID</th>
+                        <th scope="col">台幣</th>
+                        <th scope="col">美金</th>
+                        <th scope="col">註記</th>
+                        <th scope="col">時間</th>
+                        <th scope="col">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cash_data['cash_data'] %}
+                    <tr>
+                        <td>{{item[0]}}</td>
+                        <td>{{item[1]}}</td>
+                        <td>{{item[2]}}</td>
+                        <td>{{item[3]}}</td>
+                        <td>{{item[4]}}</td>
+                        <td>
+                            <form action="cash_delete" method="post" class="d-inline">
+                                <input type="hidden" name="id" value="{{item[0]}}" />
+                                <button class="btn btn-danger btn-sm" >刪除</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h2 class="card-title text-primary mb-3">股票庫存</h2>
+        <div class="table-responsive table-responsive-custom">
+            <table class="table table-hover table-striped table-bordered table-custom">
+                <thead>
+                    <tr class="table-primary">
+                        <th scope="col">股票代號</th>
+                        <th scope="col">持有股數</th>
+                        <th scope="col">目前股價</th>
+                        <th scope="col">目前市值</th>
+                        <th scope="col">股票資產占比(%)</th>
+                        <th scope="col">購買總成本(包含手續費)</th>
+                        <th scope="col">平均成本</th>
+                        <th scope="col">報酬率(%)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stock in stock_data %}
+                    <tr>
+                        <td>{{stock['stock_id']}}</td>
+                        <td>{{stock['shares']}}</td>
+                        <td>{{stock['currency_price']}}</td> 
+                        <td>{{stock['total_value']}}</td>
+                        <td>{{stock['value_percentage']}}</td> 
+                        <td>{{stock['stock_cost']}}</td>
+                        <td>{{stock['average_cost']}}</td>
+                        <td>
+                            <span
+                                class="fw-bold {% if stock['rate_of_return'] > 0 %}text-success{% elif stock['rate_of_return'] < 0 %}text-danger{% endif %}">
+                                {{stock['rate_of_return']}}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4" id="chart">
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h2 class="card-title text-primary mb-3">股票庫存占比圖</h2>
+                {% if picture_data['stock_picture'] %}
+                <figure class="m-0 text-center">
+                    <figcaption class="mb-2">股票庫存占比圖</figcaption>
+                    <img style="width: 80%; max-width: 400px" src="/static/piechart.jpg" alt="股票庫存占比圖"
+                        class="img-fluid rounded" />
+                </figure>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h2 class="card-title text-primary mb-3">資產比例圖</h2>
+                {% if picture_data['cash_picture'] %}
+                <figure class="m-0 text-center">
+                    <figcaption class="mb-2">資產比例占比圖</figcaption>
+                    <img style="width: 80%; max-width: 400px" src="/static/piechart2.jpg" alt="資產比例占比圖"
+                        class="img-fluid rounded" />
+                </figure>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
